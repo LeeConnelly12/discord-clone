@@ -48,6 +48,7 @@ class Server extends Model implements HasMedia
         $this->addMediaConversion('thumb')
               ->width(48)
               ->height(48)
+              ->format('webp')
               ->nonQueued();
     }
 }

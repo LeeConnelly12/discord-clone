@@ -13,7 +13,7 @@ class ServerController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:25'],
-            'image' => ['nullable', File::types(['jpg', 'png'])->max(5120)],
+            'image' => ['nullable', File::types(['jpg', 'png', 'webp'])->max(5120)],
         ]);
 
         $server = Server::query()->create([
@@ -45,7 +45,7 @@ class ServerController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:25'],
-            'image' => ['nullable', File::types(['jpg', 'png'])->max(5120)],
+            'image' => ['nullable', File::types(['jpg', 'png', 'webp'])->max(5120)],
         ]);
 
         $server->update([
