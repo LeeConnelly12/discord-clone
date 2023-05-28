@@ -32,6 +32,10 @@ Route::get('/servers/{server}', [ServerController::class, 'show'])
     ->name('servers.show')
     ->middleware('auth');
 
+Route::put('/servers/{server}', [ServerController::class, 'update'])
+    ->name('servers.update')
+    ->middleware('auth');
+
 Route::delete('/servers/{server}', [ServerController::class, 'destroy'])
     ->name('servers.destroy')
     ->middleware('auth');
