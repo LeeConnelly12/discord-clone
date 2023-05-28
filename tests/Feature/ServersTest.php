@@ -11,22 +11,6 @@ beforeEach(function () {
     actingAs($user);
 });
 
-it('can be listed', function () {
-    $servers = Server::factory()
-        ->count(3)
-        ->hasAttached($this->user)
-        ->create();
-
-    get('/servers')
-        ->assertOk()
-        ->assertInertia(fn (Assert $page) => $page
-            ->component('Servers/Index')
-            ->has('servers', 3, fn (Assert $page) => $page
-                ->where('name', $servers->first()->name)
-            )
-        );
-});
-
 it('can be created', function () {
     post('/servers', [
         'name' => 'new server',

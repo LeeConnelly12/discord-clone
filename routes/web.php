@@ -3,6 +3,7 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServerChannelController;
@@ -19,8 +20,8 @@ use App\Http\Controllers\ServerCategoryController;
 |
 */
 
-Route::get('/servers', [ServerController::class, 'index'])
-    ->name('servers')
+Route::get('/', [HomeController::class, 'index'])
+    ->name('home')
     ->middleware('auth');
 
 Route::post('/servers', [ServerController::class, 'store'])
@@ -58,19 +59,6 @@ Route::put('/servers/{server}/channels/{channel}', [ServerChannelController::cla
 Route::delete('/servers/{server}/channels/{channel}', [ServerChannelController::class, 'destroy'])
     ->name('servers.channels.destroy')
     ->middleware('auth');
-
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-})->name('home');
-
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
