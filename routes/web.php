@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ServerChannelController;
+use App\Http\Controllers\ServerCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +33,30 @@ Route::get('/servers/{server}', [ServerController::class, 'show'])
 
 Route::delete('/servers/{server}', [ServerController::class, 'destroy'])
     ->name('servers.destroy')
+    ->middleware('auth');
+
+Route::post('/servers/{server}/categories', [ServerCategoryController::class, 'store'])
+    ->name('servers.categories.store')
+    ->middleware('auth');
+
+Route::put('/servers/{server}/categories/{category}', [ServerCategoryController::class, 'update'])
+    ->name('servers.categories.update')
+    ->middleware('auth');
+
+Route::delete('/servers/{server}/categories/{category}', [ServerCategoryController::class, 'destroy'])
+    ->name('servers.categories.destroy')
+    ->middleware('auth');
+
+Route::post('/servers/{server}/channels', [ServerChannelController::class, 'store'])
+    ->name('servers.channels.store')
+    ->middleware('auth');
+
+Route::put('/servers/{server}/channels/{channel}', [ServerChannelController::class, 'update'])
+    ->name('servers.channels.update')
+    ->middleware('auth');
+
+Route::delete('/servers/{server}/channels/{channel}', [ServerChannelController::class, 'destroy'])
+    ->name('servers.channels.destroy')
     ->middleware('auth');
 
 Route::get('/', function () {
