@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\ServerController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,18 @@ use Inertia\Inertia;
 |
 */
 
+Route::get('/servers', [ServerController::class, 'index'])
+    ->name('servers');
+
+Route::post('/servers', [ServerController::class, 'store'])
+    ->name('servers.store');
+
+Route::get('/servers/{server}', [ServerController::class, 'show'])
+    ->name('servers.show');
+
+Route::delete('/servers/{server}', [ServerController::class, 'destroy'])
+    ->name('servers.destroy');
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -23,7 +36,7 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
