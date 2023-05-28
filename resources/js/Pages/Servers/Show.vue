@@ -1,5 +1,9 @@
-<script setup></script>
+<script setup>
+import Layout from "@/Layouts/AuthenticatedLayout.vue";
+</script>
 
 <template>
-    <div>server show page</div>
+    <Layout>
+        <div>server show page</div>
+    </Layout>
 </template>
