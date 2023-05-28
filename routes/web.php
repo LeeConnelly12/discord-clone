@@ -18,16 +18,20 @@ use App\Http\Controllers\ProfileController;
 */
 
 Route::get('/servers', [ServerController::class, 'index'])
-    ->name('servers');
+    ->name('servers')
+    ->middleware('auth');
 
 Route::post('/servers', [ServerController::class, 'store'])
-    ->name('servers.store');
+    ->name('servers.store')
+    ->middleware('auth');
 
 Route::get('/servers/{server}', [ServerController::class, 'show'])
-    ->name('servers.show');
+    ->name('servers.show')
+    ->middleware('auth');
 
 Route::delete('/servers/{server}', [ServerController::class, 'destroy'])
-    ->name('servers.destroy');
+    ->name('servers.destroy')
+    ->middleware('auth');
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [

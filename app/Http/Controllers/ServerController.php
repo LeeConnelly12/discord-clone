@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 
 class ServerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $servers = Server::all();
+        $servers = $request->user()->servers;
 
         return inertia('Servers/Index', [
             'servers' => ServerResource::collection($servers),
@@ -24,14 +24,19 @@ class ServerController extends Controller
         ]);
 
         $server = Server::query()->create([
+            'user_id' => $request->user()->id,
             'name' => $request->name,
         ]);
+
+        $server->users()->attach($request->user);
 
         return to_route('servers.show', $server);
     }
 
     public function show(Server $server)
     {
+        $server->load('users');
+
         return inertia('Servers/Show', [
             'server' => new ServerResource($server),
         ]);

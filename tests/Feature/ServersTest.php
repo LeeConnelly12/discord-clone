@@ -1,11 +1,21 @@
 <?php
 
+use App\Models\User;
 use App\Models\Server;
-use function Pest\Laravel\{get, post, delete, assertDatabaseHas, assertDatabaseMissing};
+use function Pest\Laravel\{actingAs, get, post, delete, assertDatabaseHas, assertDatabaseMissing};
 use Inertia\Testing\AssertableInertia as Assert;
 
+beforeEach(function () {
+    $user = User::factory()->create();
+    $this->user = $user;
+    actingAs($user);
+});
+
 it('can be listed', function () {
-    $servers = Server::factory()->count(3)->create();
+    $servers = Server::factory()
+        ->count(3)
+        ->hasAttached($this->user)
+        ->create();
 
     get('/servers')
         ->assertOk()
@@ -29,13 +39,18 @@ it('can be created', function () {
 });
 
 it('can be viewed', function () {
-    $server = Server::factory()->create();
+    $server = Server::factory()
+        ->hasAttached(User::factory()->count(3))
+        ->create();
 
     get('/servers/'.$server->id)
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('Servers/Show')
-            ->has('server', 1)
+            ->has('server', fn (Assert $page) => $page
+                ->where('name', $server->name)
+                ->has('users', 3)
+            )
         );
 });
 
