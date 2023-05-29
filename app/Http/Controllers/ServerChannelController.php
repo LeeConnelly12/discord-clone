@@ -44,7 +44,7 @@ class ServerChannelController extends Controller
     {
         $server->load('users:id,username', 'categories.channels', 'media');
 
-        $channel->load('messages');
+        $channel->load('messages.user');
 
         return inertia('Servers/Channels/Show', [
             'server' => new ServerResource($server),

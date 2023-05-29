@@ -48,7 +48,7 @@ function updateServerImage(e) {
 </script>
 
 <template>
-  <aside class="bg-slate-900">
+  <aside class="bg-slate-900 overflow-y-scroll no-scrollbar">
     <nav class="grid gap-2 justify-center pt-3">
       <Link v-for="server in servers" :key="server.id" :href="route('servers.show', server)">
         <img v-if="server.image_thumbnail" class="w-12 h-12 rounded-full" :src="server.image_thumbnail" :alt="server.name" />

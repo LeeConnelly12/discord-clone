@@ -7,11 +7,11 @@ const user = computed(() => usePage().props.auth.user)
 </script>
 
 <template>
-  <div class="grid grid-cols-[72px,240px,1fr] min-h-screen">
+  <div class="grid grid-cols-[72px,240px,1fr] h-screen overflow-y-hidden">
     <Sidebar :servers="user.servers" />
     <slot name="explorer" />
-    <main class="grid grid-rows-[48px,1fr,44px] pb-6">
-      <div class="h-12 bg-slate-400"></div>
+    <main class="relative pt-12 h-screen">
+      <div class="h-12 bg-slate-400 absolute left-0 top-0 right-0 z-10"></div>
       <slot name="main" />
     </main>
   </div>
