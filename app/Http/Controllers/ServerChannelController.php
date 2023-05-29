@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ChannelType;
+use App\Http\Resources\ChannelResource;
+use App\Http\Resources\ServerResource;
 use App\Models\Channel;
 use App\Models\Server;
 use Illuminate\Http\Request;
@@ -38,9 +40,16 @@ class ServerChannelController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Server $server)
+    public function show(Server $server, Channel $channel)
     {
-        //
+        $server->load('users:id,username', 'categories.channels', 'media');
+
+        $channel->load('messages');
+
+        return inertia('Servers/Channels/Show', [
+            'server' => new ServerResource($server),
+            'channel' => new ChannelResource($channel),
+        ]);
     }
 
     /**

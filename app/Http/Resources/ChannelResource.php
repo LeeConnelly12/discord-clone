@@ -3,10 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
-use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ServerResource extends JsonResource
+class ChannelResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,10 +16,9 @@ class ServerResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'server_id' => $this->server_id,
             'name' => $this->name,
-            'image_thumbnail' => $this->getFirstMediaUrl('image', 'thumb'),
-            'users' => UserResource::collection($this->whenLoaded('users')),
-            'categories' => CategoryResource::collection($this->whenLoaded('categories')),
+            'messages' => MessageResource::collection($this->whenLoaded('messages')),
         ];
     }
 }

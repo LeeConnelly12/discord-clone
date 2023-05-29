@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ChannelType;
 use App\Http\Resources\ServerResource;
 use App\Models\Server;
 use Illuminate\Http\Request;
@@ -29,12 +30,32 @@ class ServerController extends Controller
 
         $server->users()->attach($request->user());
 
+        $textCategory = $server->categories()->create([
+             'name' => 'text channels',
+        ]);
+
+        $server->channels()->create([
+            'category_id' => $textCategory->id,
+            'name' => 'general',
+            'type' => ChannelType::TEXT,
+        ]);
+
+        $voiceCategory = $server->categories()->create([
+            'name' => 'voice channels',
+        ]);
+
+        $server->channels()->create([
+            'category_id' => $voiceCategory->id,
+            'name' => 'general',
+            'type' => ChannelType::VOICE,
+        ]);
+
         return to_route('servers.show', $server);
     }
 
     public function show(Server $server)
     {
-        $server->load('users:id,username', 'media');
+        $server->load('users:id,username', 'categories.channels', 'media');
 
         return inertia('Servers/Show', [
             'server' => new ServerResource($server),

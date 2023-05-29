@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SendMessageController;
 use App\Http\Controllers\ServerChannelController;
 use App\Http\Controllers\ServerCategoryController;
 
@@ -56,12 +57,20 @@ Route::post('/servers/{server}/channels', [ServerChannelController::class, 'stor
     ->name('servers.channels.store')
     ->middleware('auth');
 
+Route::get('/servers/{server}/channels/{channel}', [ServerChannelController::class, 'show'])
+    ->name('servers.channels.show')
+    ->middleware('auth');
+
 Route::put('/servers/{server}/channels/{channel}', [ServerChannelController::class, 'update'])
     ->name('servers.channels.update')
     ->middleware('auth');
 
 Route::delete('/servers/{server}/channels/{channel}', [ServerChannelController::class, 'destroy'])
     ->name('servers.channels.destroy')
+    ->middleware('auth');
+
+Route::post('/servers/{server}/channels/{channel}/messages', SendMessageController::class)
+    ->name('servers.channels.send-message')
     ->middleware('auth');
 
 Route::middleware('auth')->group(function () {

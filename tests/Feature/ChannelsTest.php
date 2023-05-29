@@ -3,9 +3,12 @@
 use App\Models\User;
 use App\Models\Server;
 use App\Models\Channel;
+use App\Models\Message;
 use App\Models\Category;
 use App\Enums\ChannelType;
-use function Pest\Laravel\{actingAs, post, put, delete, assertDatabaseHas, assertDatabaseMissing};
+use App\Events\MessageSent;
+use Inertia\Testing\AssertableInertia as Assert;
+use function Pest\Laravel\{actingAs, get, post, put, delete, assertDatabaseHas, assertDatabaseMissing};
 
 beforeEach(function () {
     $user = User::factory()->create();
@@ -34,6 +37,20 @@ it('can be created', function () {
     ]);
 });
 
+it('can be viewed', function () {
+    $channel = Channel::factory()
+        ->has(Message::factory()->count(3))
+        ->create();
+
+    get('/servers/'.$this->server->id.'/channels/'.$channel->id)
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Servers/Channels/Show')
+            ->has('server')
+            ->has('channel.messages', 3)
+        );
+});
+
 it('can be updated', function () {
     $channel = Channel::factory()->create([
         'name' => 'old channel name',
@@ -59,4 +76,21 @@ it('can be deleted', function () {
     assertDatabaseMissing(Channel::class, [
         'id' => $channel->id,
     ]);
+});
+
+it('can have messages sent', function () {
+    Event::fake();
+
+    $channel = Channel::factory()->create();
+
+    post('/servers/'.$this->server->id.'/channels/'.$channel->id.'/messages', [
+        'text' => 'new message',
+    ])
+    ->assertRedirect();
+
+    assertDatabaseHas(Message::class, [
+        'text' => 'new message',
+    ]);
+
+    Event::assertDispatched(MessageSent::class);
 });

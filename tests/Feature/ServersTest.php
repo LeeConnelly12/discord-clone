@@ -2,6 +2,8 @@
 
 use App\Models\User;
 use App\Models\Server;
+use App\Models\Channel;
+use App\Models\Category;
 use Illuminate\Http\UploadedFile;
 use Inertia\Testing\AssertableInertia as Assert;
 use function Pest\Laravel\{actingAs, get, post, put, delete, assertDatabaseHas, assertDatabaseMissing};
@@ -20,6 +22,18 @@ it('can be created', function () {
 
     assertDatabaseHas(Server::class, [
         'name' => 'new server',
+    ]);
+
+    assertDatabaseHas(Category::class, [
+        'name' => 'text channels',
+    ]);
+
+    assertDatabaseHas(Category::class, [
+        'name' => 'voice channels',
+    ]);
+
+    assertDatabaseHas(Channel::class, [
+        'name' => 'general',
     ]);
 });
 
@@ -44,6 +58,11 @@ it('can be created with an image', function () {
 it('can be viewed', function () {
     $server = Server::factory()
         ->hasAttached(User::factory()->count(3))
+        ->has(
+            Category::factory()
+                ->count(2)
+                ->has(Channel::factory())
+        )
         ->create();
 
     get('/servers/'.$server->id)
@@ -51,9 +70,14 @@ it('can be viewed', function () {
         ->assertInertia(fn (Assert $page) => $page
             ->component('Servers/Show')
             ->has('server', fn (Assert $page) => $page
+                ->where('id', $server->id)
                 ->where('name', $server->name)
                 ->where('image_thumbnail', $server->getFirstMediaUrl('image', 'thumb'))
                 ->has('users', 3)
+                ->has('categories', 2, fn (Assert $page) => $page
+                    ->has('channels', 1)
+                    ->etc()
+                )
             )
         );
 });

@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
+use App\Models\Server;
+use App\Models\Channel;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,5 +20,16 @@ class DatabaseSeeder extends Seeder
             'username' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        Server::factory()
+            ->count(3)
+            ->for($user)
+            ->hasAttached($user)
+            ->has(
+                Category::factory()
+                    ->count(2)
+                    ->has(Channel::factory())
+            )
+            ->create();
     }
 }
