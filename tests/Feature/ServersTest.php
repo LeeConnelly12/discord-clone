@@ -126,3 +126,23 @@ it('can be deleted', function () {
         'id' => $server->id,
     ]);
 });
+
+it('can be joined through server URL', function () {
+    $server = Server::factory()->create();
+
+    get('/servers/'.$server->id)
+        ->assertOk();
+
+    expect($server->users->pluck('username')->all())
+        ->toContain($this->user->username);
+});
+
+it('can be joined through channel URL', function () {
+    $channel = Channel::factory()->create();
+
+    get('/servers/'.$channel->server_id.'/channels/'.$channel->id)
+        ->assertOk();
+
+    expect($channel->server->users->pluck('username')->all())
+        ->toContain($this->user->username);
+});

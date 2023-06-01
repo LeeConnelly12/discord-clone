@@ -53,9 +53,13 @@ class ServerController extends Controller
         return to_route('servers.show', $server);
     }
 
-    public function show(Server $server)
+    public function show(Request $request, Server $server)
     {
         $server->load('users:id,username', 'categories.channels', 'media');
+
+        if (!$server->users()->where('users.id', $request->user()->id)->exists()) {
+            $server->users()->attach($request->user());
+        }
 
         return inertia('Servers/Show', [
             'server' => new ServerResource($server),

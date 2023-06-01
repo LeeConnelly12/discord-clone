@@ -40,11 +40,14 @@ class ServerChannelController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Server $server, Channel $channel)
+    public function show(Request $request, Server $server, Channel $channel)
     {
-        $server->load('users:id,username', 'categories.channels', 'media');
-
+        $server->load('users:id,username', 'categories.channels');
         $channel->load('messages.user');
+
+        if ($server->users()->where('users.id', $request->user()->id)) {
+            $server->users()->attach($request->user());
+        }
 
         return inertia('Servers/Channels/Show', [
             'server' => new ServerResource($server),
